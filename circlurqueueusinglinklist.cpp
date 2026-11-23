@@ -1,91 +1,127 @@
 #include <iostream>
 using namespace std;
 
-struct Node {
+// Node class
+class Node {
+public:
     int data;
     Node* next;
+
+    Node(int value) {
+        data = value;
+        next = NULL;
+    }
 };
 
-Node* front = NULL;
-Node* rear = NULL;
+// Circular Queue class
+class CircularQueue {
+private:
+    Node* front;
+    Node* rear;
 
-// ENQUEUE
-void enqueue(int value) {
-    Node* newNode = new Node;
-    newNode->data = value;
+public:
 
-    if (front == NULL) {
-        front = rear = newNode;
-        rear->next = front;
-    }
-    else {
-        rear->next = newNode;
-        rear = newNode;
-        rear->next = front;
+    // Constructor
+    CircularQueue() {
+        front = NULL;
+        rear = NULL;
     }
 
-    cout << value << " inserted into queue." << endl;
-}
+    // ENQUEUE
+    void enqueue(int value) {
 
-// DEQUEUE
-void dequeue() {
-    if (front == NULL) {
-        cout << "Queue is Empty!" << endl;
-        return;
+        Node* newNode = new Node(value);
+
+        // Queue is empty
+        if (front == NULL) {
+            front = rear = newNode;
+            rear->next = front;
+        }
+        else {
+            rear->next = newNode;
+            rear = newNode;
+            rear->next = front;
+        }
+
+        cout << value << " inserted into queue." << endl;
     }
 
-    // Only one node
-    if (front == rear) {
-        cout << front->data << " deleted from queue." << endl;
+    // DEQUEUE
+    void dequeue() {
 
-        delete front;
-        front = rear = NULL;
+        // Queue is empty
+        if (front == NULL) {
+            cout << "Queue is Empty!" << endl;
+            return;
+        }
+
+        // Only one node
+        if (front == rear) {
+
+            cout << front->data << " deleted from queue." << endl;
+
+            delete front;
+
+            front = NULL;
+            rear = NULL;
+        }
+        else {
+
+            Node* temp = front;
+
+            cout << front->data << " deleted from queue." << endl;
+
+            front = front->next;
+
+            rear->next = front;
+
+            delete temp;
+        }
     }
-    else {
+
+    // PEEK
+    void peek() {
+
+        if (front == NULL) {
+            cout << "Queue is Empty!" << endl;
+        }
+        else {
+            cout << "Front element: "
+                 << front->data << endl;
+        }
+    }
+
+    // DISPLAY
+    void display() {
+
+        if (front == NULL) {
+            cout << "Queue is Empty!" << endl;
+            return;
+        }
+
         Node* temp = front;
 
-        cout << front->data << " deleted from queue." << endl;
+        cout << "Circular Queue: ";
 
-        front = front->next;
-        rear->next = front;
+        do {
+            cout << temp->data << " ";
+            temp = temp->next;
 
-        delete temp;
+        } while (temp != front);
+
+        cout << endl;
     }
-}
+};
 
-// PEEK
-void peek() {
-    if (front == NULL) {
-        cout << "Queue is Empty!" << endl;
-    }
-    else {
-        cout << "Front element: " << front->data << endl;
-    }
-}
-
-// DISPLAY
-void display() {
-    if (front == NULL) {
-        cout << "Queue is Empty!" << endl;
-        return;
-    }
-
-    Node* temp = front;
-
-    cout << "Circular Queue: ";
-
-    do {
-        cout << temp->data << " ";
-        temp = temp->next;
-    } while (temp != front);
-
-    cout << endl;
-}
-
+// Main function
 int main() {
+
+    CircularQueue q;
+
     int choice, value;
 
     do {
+
         cout << "\n----- CIRCULAR QUEUE -----" << endl;
         cout << "1. Enqueue" << endl;
         cout << "2. Dequeue" << endl;
@@ -101,19 +137,20 @@ int main() {
             case 1:
                 cout << "Enter value: ";
                 cin >> value;
-                enqueue(value);
+
+                q.enqueue(value);
                 break;
 
             case 2:
-                dequeue();
+                q.dequeue();
                 break;
 
             case 3:
-                peek();
+                q.peek();
                 break;
 
             case 4:
-                display();
+                q.display();
                 break;
 
             case 5:
